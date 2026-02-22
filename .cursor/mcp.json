@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "weather-service": {
+      "command": "python",
+      "args": ["c:\\_burhan\\AI\\poc-basic-mcp\\server.py"]
+    }
+  }
+}
