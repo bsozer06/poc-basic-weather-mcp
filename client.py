@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import os
 import subprocess
 import sys
 import time
@@ -24,7 +25,6 @@ from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
 SERVER_SCRIPT = "server.py"
-API_SCRIPT = "weather_api.py"
 API_HOST = "127.0.0.1"
 API_PORT = 8000
 API_BASE_URL = f"http://{API_HOST}:{API_PORT}"
@@ -39,10 +39,8 @@ def _validate_weather_response(data: dict) -> list[str]:
 
     # temperature → float
     temp = data.get("temperature")
-    if not isinstance(temp, (float, int)):
-        errors.append(f"temperature float olmalı, gelen: {type(temp).__name__}")
-    elif not isinstance(temp, float):
-        errors.append(f"temperature int değil float olmalı, gelen: {temp}")
+    if not isinstance(temp, float):
+        errors.append(f"temperature float olmalı, gelen: {type(temp).__name__} ({temp})")
 
     # condition → enum
     cond = data.get("condition")
@@ -106,7 +104,7 @@ async def main() -> None:
         server_params = StdioServerParameters(
             command=sys.executable,
             args=[SERVER_SCRIPT],
-            env={**dict(__import__("os").environ), "WEATHER_API_BASE_URL": API_BASE_URL},
+            env={**os.environ, "WEATHER_API_BASE_URL": API_BASE_URL},
         )
 
         print("=" * 60)
